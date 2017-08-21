@@ -57,7 +57,7 @@ class Netvlad:
         return tf.nn.avg_pool(bottom, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
 
     def max_pool(self, bottom, name):
-        return tf.nn.max_pool(bottom, ksize = [1, 3, 3, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
+        return tf.nn.max_pool(bottom, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME', name = name)
 
     def conv_layer(self, bottom, in_channels, out_channels, name):
         with tf.variable_scope(name):
