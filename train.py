@@ -36,6 +36,9 @@ def main(_):
             loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc2)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
+            correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc2), axis = 1), Y)
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
+
             sess.run(tf.global_variables_initializer())
 
             train_loss = 0
@@ -46,9 +49,9 @@ def main(_):
                 count = 0.0
                 for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                     count += 1
-                    _, train_loss = sess.run([train, loss], feed_dict = {X: x, Y: y, train_mode: True})
+                    _, train_loss, acc = sess.run([train, loss, accuracy], feed_dict = {X: x, Y: y, train_mode: True})
                     if count % FLAGS.print_every == 0:
-                        print("Epoch: %s    progress: %.4f      training_loss = %.6f\n" % (i, count / numBatch, train_loss))
+                        print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
                 if i % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
