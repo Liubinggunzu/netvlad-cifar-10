@@ -7,7 +7,7 @@ import eva_utils
 import os
 import math
 
-
+tf.app.flags.DEFINE_string('modelPath', 'checkpoint/', 'path of trained model')
 tf.app.flags.DEFINE_integer('batch_size', 100, 'num of triplets in a batch')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 
@@ -22,7 +22,7 @@ def main(_):
             Y = tf.placeholder(tf.int64, [None], name = 'Y')
             train_mode = tf.placeholder(tf.bool, name = 'train_mode')
 
-            model = netvlad.Netvlad('checkpoint/epoch_25_loss_0.338908.npy')
+            model = netvlad.Netvlad(FLAGS.modelPath)
             model.build(X, train_mode)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
