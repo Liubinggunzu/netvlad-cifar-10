@@ -10,7 +10,6 @@ class Netvlad:
         
         self.var_dict = {}
         self.trainable = trainable
-        self.dropout = dropout
 
     def build(self, rgb, train_mode = None):
         """
