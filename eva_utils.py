@@ -9,6 +9,7 @@ def next_batch(batch_size, dataPath):
     with open('%s/test_batch' % (dataPath), 'rb') as fo:
         dic = cPickle.load(fo)
     X = dic['data']
+    X = X / 255.0
     Y = dic['labels']
     numBatches = 10000 / batch_size
     for j in range(numBatches):
