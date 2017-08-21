@@ -15,12 +15,9 @@ class Netvlad:
         self.var_dict = {}
         self.trainable = trainable
 
-    def build(self, rgb, train_mode = None):
+    def build(self, rgb):
         """
-        load variable from npy to build the VGG
-
         :param rgb: rgb image [batch, height, width, 3] values scaled [0, 1]
-        :param train_mode: a bool tensor, usually a placeholder: if True, dropout will be turned on
         """
 
         self.conv1 = self.conv_layer(rgb, 3, 64, "conv1")
@@ -67,7 +64,7 @@ class Netvlad:
             return fc
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):
-        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.001)
+        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.1)
         filters = self.get_var(initial_value, name, 0, name + "_filters")
 
         initial_value = tf.truncated_normal([out_channels], 0.1, .1)
