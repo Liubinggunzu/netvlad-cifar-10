@@ -34,7 +34,7 @@ def main(_):
 
 
             loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
-            train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
+            train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
