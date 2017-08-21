@@ -13,7 +13,7 @@ tf.app.flags.DEFINE_string('checkpoint_dir', 'checkpoint', 'directory to save tr
 
 tf.app.flags.DEFINE_integer('batch_size', 100, 'num of triplets in a batch')
 tf.app.flags.DEFINE_integer('numEpoch', 30, 'num of epochs to train')
-tf.app.flags.DEFINE_integer('lr', 0.0001, 'initial learning rate')
+tf.app.flags.DEFINE_float('lr', 0.0001, 'initial learning rate')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 tf.app.flags.DEFINE_integer('save_every', 5, 'save model every ... epochs')
 
