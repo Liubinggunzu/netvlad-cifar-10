@@ -32,16 +32,17 @@ def main(_):
             sess.run(tf.global_variables_initializer())
 
             Acc = 0.0
+            acc = 0.0
             numBatch = 10000 / FLAGS.batch_size
 
             print("evaluation begins!\n")
             count = 0.0
             for x, y in eva_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                 count += 1
-                accuracy = sess.run(accuracy, feed_dict = {X: x, Y: y, train_mode: False})
-                Acc += accuracy
+                acc = sess.run(accuracy, feed_dict = {X: x, Y: y, train_mode: False})
+                Acc += acc
                 if count % FLAGS.print_every == 0:
-                    print("progress: %.4f      current accuracy = %.6f      total accuracy = %.6f\n" % (count / numBatch, accuracy, Acc / count))
+                    print("progress: %.4f      current accuracy = %.6f      total accuracy = %.6f\n" % (count / numBatch, acc, Acc / count))
 
 if __name__ == '__main__':
     tf.app.run()
