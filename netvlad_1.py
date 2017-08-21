@@ -28,7 +28,7 @@ class Netvlad:
 
         self.vlad_output = self.vlad_pooling_layer(self.conv2, 16, 100, 'vlad_pooling')
 
-        self.fc1 = self.fc_layer(self.vlad_output, 4096, 384, 'fc1')
+        self.fc1 = self.fc_layer(self.vlad_output, 1024, 384, 'fc1')
 
         self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
 
