@@ -38,7 +38,7 @@ def main(_):
             count = 0.0
             for x, y in eva_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                 count += 1
-                accuracy = sess.run([accuracy], feed_dict = {X: x, Y: y, train_mode: False})
+                accuracy = sess.run(accuracy, feed_dict = {X: x, Y: y, train_mode: False})
                 Acc += accuracy
                 if count % FLAGS.print_every == 0:
                     print("progress: %.4f      current accuracy = %.6f      total accuracy = %.6f\n" % (count / numBatch, accuracy, Acc / count))
