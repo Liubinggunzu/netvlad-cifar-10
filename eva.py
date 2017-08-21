@@ -20,10 +20,9 @@ def main(_):
         with tf.Session(config = config) as sess:
             X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
             Y = tf.placeholder(tf.int64, [None], name = 'Y')
-            train_mode = tf.placeholder(tf.bool, name = 'train_mode')
 
             model = netvlad.Netvlad(FLAGS.modelPath)
-            model.build(X, train_mode)
+            model.build(X)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
@@ -39,7 +38,7 @@ def main(_):
             count = 0.0
             for x, y in eva_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                 count += 1
-                acc = sess.run(accuracy, feed_dict = {X: x, Y: y, train_mode: False})
+                acc = sess.run(accuracy, feed_dict = {X: x, Y: y})
                 Acc += acc
                 if count % FLAGS.print_every == 0:
                     print("progress: %.4f      current accuracy = %.6f      total accuracy = %.6f\n" % (count / numBatch, acc, Acc / count))
