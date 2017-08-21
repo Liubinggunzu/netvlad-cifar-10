@@ -24,13 +24,11 @@ class Netvlad:
         self.pool1 = self.max_pool(self.conv1, 'pool1')
         self.norm1 = tf.nn.lrn(self.pool1, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75, name = 'norm1')
 
-        self.conv2 = self.conv_layer(self.norm1, 64, 64, "conv2")
-        self.norm2 = tf.nn.lrn(self.conv2, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75, name = 'norm2')
-        self.pool2 = self.max_pool(self.norm2, 'pool2')
+        self.conv2 = self.conv_layer_2(self.norm1, 64, 64, "conv2")
 
-        self.reshape = tf.reshape(self.pool2, [-1, 4096])
+        self.vlad_output = self.vlad_pooling_layer(self.conv2, 64, 100, 'vlad_pooling')
 
-        self.fc1 = self.fc_layer(self.reshape, 4096, 384, 'fc1')
+        self.fc1 = self.fc_layer(self.vlad_output, 4096, 384, 'fc1')
 
         self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
 
@@ -53,6 +51,34 @@ class Netvlad:
             relu = tf.nn.relu(bias)
 
             return relu
+    
+    def conv_layer_2(self, bottom, in_channels, out_channels, name):
+        with tf.variable_scope(name):
+            filt, conv_biases = self.get_conv_var(5, in_channels, out_channels, name)
+
+            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
+            bias = tf.nn.bias_add(conv, conv_biases)
+
+            return bias
+
+    def vlad_pooling_layer(self, bottom, k_cluster, alpha, name):
+        with tf.variable_scope(name):
+            filt, conv_biases, centers = self.get_vald_pooling_var(k_cluster, alpha, name)
+
+            conv_reshape = tf.reshape(bottom, shape = [-1, (bottom.get_shape().as_list()[1] * bottom.get_shape().as_list()[2]), 64], name = 'reshape')    # conv_reshape is B x N x D
+            conv_norm = tf.nn.l2_normalize(conv_reshape, dim = 1)
+            descriptor = tf.expand_dims(conv_norm, axis = -1, name = 'expanddim')  # descriptor is B x N x D x 1
+            conv_vlad = tf.nn.convolution(descriptor, filt, padding = 'VALID')  # conv_vlad is B x N x 1 x K
+            bias = tf.nn.bias_add(conv_vlad, conv_biases)
+            a_k = tf.nn.softmax(tf.squeeze(bias, axis = 2), dim = -1, name = "vlad_softmax")     # a_k is B x N x K
+
+            V1 = tf.matmul(conv_reshape, a_k, transpose_a = True)    # V_1 is B x D x K
+            V2 = tf.multiply(tf.reduce_sum(a_k, axis = 1, keep_dims = True), centers)     # V_1 is B x D x K
+            V = tf.subtract(V1, V2)
+
+            norm = tf.nn.l2_normalize(tf.reshape(tf.nn.l2_normalize(V, dim = 1), shape = [-1, 4096]), dim = 1)     # norm is B x (D x K)
+
+            return norm
 
     def fc_layer(self, bottom, in_size, out_size, name):
         with tf.variable_scope(name):
@@ -82,6 +108,18 @@ class Netvlad:
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return weights, biases
+
+    def get_vald_pooling_var(self, k_cluster, alpha, name):
+        initial_value = tf.truncated_normal([1, 64, 1, k_cluster], 0.0, 0.01)
+        filters = self.get_var(initial_value, name, 0, name + "_filters")
+
+        initial_value = tf.truncated_normal([64, k_cluster], 0.0, 0.01)
+        centers = self.get_var(initial_value, name, 1, name + '_centers')
+
+        initial_value = tf.truncated_normal([k_cluster], 0.0, 0.01)
+        biases = self.get_var(initial_value, name, 2, name + '_biases')
+
+        return filters, biases, centers
 
     def get_var(self, initial_value, name, idx, var_name):
         if self.data_dict is not None and name in self.data_dict:

@@ -3,6 +3,7 @@
 import tensorflow as tf
 
 import netvlad
+import netvlad_1
 import train_utils
 import os
 import math
@@ -17,6 +18,7 @@ tf.app.flags.DEFINE_float('lr', 0.001, 'initial learning rate')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 tf.app.flags.DEFINE_integer('save_every', 5, 'save model every ... epochs')
 
+tf.app.flags.DEFINE_boolean('use_vlad', True, 'use vlad pooling or not')
 FLAGS = tf.app.flags.FLAGS
 
 
@@ -26,8 +28,11 @@ def main(_):
         with tf.Session(config = config) as sess:
             X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
             Y = tf.placeholder(tf.int64, [None], name = 'Y')
-
-            model = netvlad.Netvlad()
+            
+            if FLAGS.use_vlad:
+                model = netvlad_1.Netvlad()
+            else:
+                model = netvlad.Netvlad()
             model.build(X)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
