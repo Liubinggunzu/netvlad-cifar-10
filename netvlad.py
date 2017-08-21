@@ -5,9 +5,13 @@ import tensorflow as tf
 
 
 class Netvlad:
-    def __init__(self, trainable = True):
-        self.data_dict = None
-        
+    def __init__(self, npy_path = None, trainable = True):
+        if npy_path is not None:
+            self.data_dict = np.load(npy_path, encoding = 'latin1').item()
+            print("npy file loaded")
+        else:
+            self.data_dict = None
+
         self.var_dict = {}
         self.trainable = trainable
 
