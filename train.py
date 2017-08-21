@@ -44,7 +44,7 @@ def main(_):
             print("training begins!\n")
             for i in range(FLAGS.numEpoch):
                 count = 0.0
-                for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py')
+                for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                     count += 1
                     _, train_loss = sess.run([train, loss], feed_dict = {X: x, Y: y, train_mode: True})
                     if count % FLAGS.print_every == 0:
