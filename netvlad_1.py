@@ -21,27 +21,27 @@ class Netvlad:
         """
 
         self.conv1 = self.conv_layer(rgb, 3, 64, "conv1")
-        self.norm1 = tf.nn.lrn(self.conv1, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool1 = self.max_pool(self.norm1, 'pool1')
+        # self.norm1 = tf.nn.lrn(self.conv1, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
+        self.pool1 = self.max_pool(self.conv1, 'pool1')
 
         self.conv2_1 = self.conv_layer(self.pool1, 64, 64, "conv2_1")
         self.conv2_2 = self.conv_layer(self.conv2_1, 64, 64, "conv2_2")
         self.conv2_3 = self.conv_layer(self.conv2_2, 64, 64, "conv2_3")
         self.conv2_4 = self.conv_layer(self.conv2_3, 64, 64, "conv2_4")
-        self.norm2 = tf.nn.lrn(self.conv2_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool2 = self.max_pool(self.norm2, 'pool2')
+        # self.norm2 = tf.nn.lrn(self.conv2_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
+        self.pool2 = self.max_pool(self.conv2_4, 'pool2')
 
         self.conv3_1 = self.conv_layer(self.pool2, 64, 128, "conv3_1")
         self.conv3_2 = self.conv_layer(self.conv3_1, 128, 128, "conv3_2")
         self.conv3_3 = self.conv_layer(self.conv3_2, 128, 128, "conv3_3")
         self.conv3_4 = self.conv_layer(self.conv3_3, 128, 128, "conv3_4")
-        self.norm3 = tf.nn.lrn(self.conv3_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
+        # self.norm3 = tf.nn.lrn(self.conv3_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
         self.pool3 = self.max_pool(self.conv3_4, 'pool3')
 
         self.conv4_1 = self.conv_layer(self.pool3, 128, 256, "conv4_1")
         self.conv4_2 = self.conv_layer(self.conv4_1, 256, 256, "conv4_2")
         self.conv4_3 = self.conv_layer(self.conv4_2, 256, 256, "conv4_3")
-        self.conv4_4 = self.conv_layer(self.conv4_3, 256, 256, "conv4_4")
+        self.conv4_4 = self.conv_layer_last(self.conv4_3, 256, 256, "conv4_4")
 
         self.vlad_output = self.vlad_pooling_layer(self.conv4_4, 16, 100, 'vlad_pooling')
 
@@ -65,7 +65,6 @@ class Netvlad:
 
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
-            norm = tf.nn.lrn(bias, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
             relu = tf.nn.relu(norm)
 
             return relu
@@ -134,7 +133,7 @@ class Netvlad:
         initial_value = tf.truncated_normal([256, k_cluster], 0.0, 0.1)
         centers = self.get_var(initial_value, name, 1, name + '_centers')
 
-        initial_value = tf.truncated_normal([k_cluster], 0.0, 0.1)
+        initial_value = tf.truncated_normal([k_cluster], 0.0, 0.01)
         biases = self.get_var(initial_value, name, 2, name + '_biases')
 
         return filters, biases, centers
