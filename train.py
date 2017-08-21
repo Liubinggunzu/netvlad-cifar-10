@@ -10,12 +10,8 @@ import math
 
 
 tf.app.flags.DEFINE_string('checkpoint_dir', 'checkpoint', 'directory to save trained models')
-tf.app.flags.DEFINE_string('pretrained_model', 'vgg16.npy', 'pretrained netvlad model path')
-tf.app.flags.DEFINE_string('train_record_path', 'records/train', 'path of training tfrecords file')
-tf.app.flags.DEFINE_string('val_record_path', 'records/val', 'path of validation tfrecords file')
-tf.app.flags.DEFINE_string('test_record_path', 'records/test', 'path of testing tfrecords file')
 
-tf.app.flags.DEFINE_integer('batch_size', 120, 'num of triplets in a batch')
+tf.app.flags.DEFINE_integer('batch_size', 100, 'num of triplets in a batch')
 tf.app.flags.DEFINE_integer('numEpoch', 30, 'num of epochs to train')
 tf.app.flags.DEFINE_integer('lr', 0.0001, 'initial learning rate')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
@@ -25,53 +21,36 @@ FLAGS = tf.app.flags.FLAGS
 
 
 def main(_):
-    print('checkpoint 11111111')
-    filenameQueue = train_utils.generate_filenamequeue(FLAGS.train_record_path, FLAGS.numEpoch)
-    print('checkpoint 22222222')
-    [imgs, labels] = train_utils.next_batch(filenameQueue, FLAGS.batch_size)
-    print('checkpoint 33333333')
-    numTrainImg = train_utils.num_Train_Img('trainImgList.txt')
-    print("number of imgs in train dataset is %s\n" % numTrainImg)
-
-    init = tf.group(tf.initialize_all_variables(), tf.initialize_local_variables())
     config = tf.ConfigProto(allow_soft_placement = True)
     with tf.device('/gpu:1'):
         with tf.Session(config = config) as sess:
+            X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
+            Y = tf.placeholder(tf.float32, [None], name = 'Y')
             train_mode = tf.placeholder(tf.bool, name = 'train_mode')
 
-            model = netvlad.Netvlad(FLAGS.pretrained_model)
-            model.build(imgs, train_mode)
+            model = netvlad.Netvlad()
+            model.build(X, train_mode)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
-            # loss = -tf.reduce_sum(tf.one_hot(labels, depth = 429) * tf.log(model.prob))
-            loss = tf.losses.softmax_cross_entropy(tf.one_hot(labels, depth = 429), model.fc8)
+
+            loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc2)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
-            sess.run(init)
             sess.run(tf.global_variables_initializer())
 
-            coord = tf.train.Coordinator()
-            threads = tf.train.start_queue_runners(sess = sess, coord = coord)
-  
             train_loss = 0
-            count = 0.0
+            numBatch = 50000 / FLAGS.batch_size
 
             print("training begins!\n")
-
-            try:
-                while not coord.should_stop():
+            for i in range(FLAGS.numEpoch):
+                count = 0.0
+                for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py')
                     count += 1
-                    _, train_loss = sess.run([train, loss], feed_dict = {train_mode: True})
+                    _, train_loss = sess.run([train, loss], feed_dict = {X: x, Y: y, train_mode: True})
                     if count % FLAGS.print_every == 0:
-                        print("Epoch: %.4f  training_loss = %.6f\n" % (count * FLAGS.batch_size / numTrainImg, train_loss))
-                    if (count * FLAGS.batch_size) % (FLAGS.save_every * numTrainImg) == 0:
-                        model.save_npy(sess, "%s/netvlad_epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, (count * FLAGS.batch_size) / numTrainImg, train_loss))
-            except tf.errors.OutOfRangeError:
-                print("training finished")
-            finally:
-                coord.request_stop()
-        
-            coord.join(threads)
+                        print("Epoch: %s    progress: %.4f      training_loss = %.6f\n" % (i, count / numBatch, train_loss))
+                if i % FLAGS.save_every == 0:
+                    model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
 if __name__ == '__main__':
     tf.app.run()
