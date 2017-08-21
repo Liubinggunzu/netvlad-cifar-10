@@ -13,7 +13,7 @@ tf.app.flags.DEFINE_string('checkpoint_dir', 'checkpoint', 'directory to save tr
 
 tf.app.flags.DEFINE_integer('batch_size', 100, 'num of triplets in a batch')
 tf.app.flags.DEFINE_integer('numEpoch', 30, 'num of epochs to train')
-# tf.app.flags.DEFINE_integer('lr', 0.001, 'initial learning rate')
+tf.app.flags.DEFINE_float('lr', 0.001, 'initial learning rate')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 tf.app.flags.DEFINE_integer('save_every', 5, 'save model every ... epochs')
 
@@ -34,7 +34,7 @@ def main(_):
 
 
             loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
-            train = tf.train.GradientDescentOptimizer(0.001).minimize(loss)
+            train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
