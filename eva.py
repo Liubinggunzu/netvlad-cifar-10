@@ -26,7 +26,7 @@ def main(_):
             model.build(X, train_mode)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
-            correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc2), axis = 1), Y)
+            correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
 
             sess.run(tf.global_variables_initializer())

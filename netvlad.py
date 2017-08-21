@@ -35,7 +35,9 @@ class Netvlad:
 
         self.fc1 = self.fc_layer(self.reshape, 4096, 384, 'fc1')
 
-        self.fc2 = self.fc_layer(self.fc1, 384, 10, 'fc2')
+        self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
+
+        self.fc3 = self.fc_layer(self.fc2, 192, 10, 'fc3')
 
         self.data_dict = None
 
