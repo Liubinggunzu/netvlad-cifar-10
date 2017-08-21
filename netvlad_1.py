@@ -109,7 +109,7 @@ class Netvlad:
     
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):
-        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.01)
+        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.1)
         filters = self.get_var(initial_value, name, 0, name + "_filters")
 
         initial_value = tf.truncated_normal([out_channels], 0.0, .01)
@@ -119,7 +119,7 @@ class Netvlad:
 
 
     def get_fc_var(self, in_size, out_size, name):
-        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.01)
+        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.1)
         weights = self.get_var(initial_value, name, 0, name + "_weights")
 
         initial_value = tf.truncated_normal([out_size], 0.0, .01)
@@ -128,13 +128,13 @@ class Netvlad:
         return weights, biases
 
     def get_vald_pooling_var(self, k_cluster, alpha, name):
-        initial_value = tf.truncated_normal([1, 256, 1, k_cluster], 0.0, 0.01)
+        initial_value = tf.truncated_normal([1, 256, 1, k_cluster], 0.0, 0.1)
         filters = self.get_var(initial_value, name, 0, name + "_filters")
 
-        initial_value = tf.truncated_normal([256, k_cluster], 0.0, 0.01)
+        initial_value = tf.truncated_normal([256, k_cluster], 0.0, 0.1)
         centers = self.get_var(initial_value, name, 1, name + '_centers')
 
-        initial_value = tf.truncated_normal([k_cluster], 0.0, 0.01)
+        initial_value = tf.truncated_normal([k_cluster], 0.0, 0.1)
         biases = self.get_var(initial_value, name, 2, name + '_biases')
 
         return filters, biases, centers
