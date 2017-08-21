@@ -26,7 +26,7 @@ class Netvlad:
 
         self.conv2 = self.conv_layer_2(self.norm1, 64, 64, "conv2")
 
-        self.vlad_output = self.vlad_pooling_layer(self.conv2, 64, 100, 'vlad_pooling')
+        self.vlad_output = self.vlad_pooling_layer(self.conv2, 16, 100, 'vlad_pooling')
 
         self.fc1 = self.fc_layer(self.vlad_output, 4096, 384, 'fc1')
 
@@ -76,7 +76,7 @@ class Netvlad:
             V2 = tf.multiply(tf.reduce_sum(a_k, axis = 1, keep_dims = True), centers)     # V_1 is B x D x K
             V = tf.subtract(V1, V2)
 
-            norm = tf.nn.l2_normalize(tf.reshape(tf.nn.l2_normalize(V, dim = 1), shape = [-1, 4096]), dim = 1)     # norm is B x (D x K)
+            norm = tf.nn.l2_normalize(tf.reshape(tf.nn.l2_normalize(V, dim = 1), shape = [-1, 1024]), dim = 1)     # norm is B x (D x K)
 
             return norm
 
