@@ -27,9 +27,9 @@ class Netvlad:
         self.norm2 = tf.nn.lrn(self.conv2, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75, name = 'norm2')
         self.pool2 = self.max_pool(self.norm2, 'pool2')
 
-        self.reshape = tf.reshape(self.pool2, [-1, 1600])
+        self.reshape = tf.reshape(self.pool2, [-1, 4096])
 
-        self.fc1 = self.fc_layer(self.reshape, 1600, 384, 'fc1')
+        self.fc1 = self.fc_layer(self.reshape, 4096, 384, 'fc1')
 
         self.fc2 = self.fc_layer(self.fc1, 384, 10, 'fc2')
 
