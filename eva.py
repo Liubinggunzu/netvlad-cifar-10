@@ -19,7 +19,7 @@ def main(_):
     with tf.device('/gpu:1'):
         with tf.Session(config = config) as sess:
             X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
-            Y = tf.placeholder(tf.int32, [None], name = 'Y')
+            Y = tf.placeholder(tf.int64, [None], name = 'Y')
             train_mode = tf.placeholder(tf.bool, name = 'train_mode')
 
             model = netvlad.Netvlad('checkpoint/epoch_25_loss_0.338908.npy')
