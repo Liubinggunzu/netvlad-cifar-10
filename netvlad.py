@@ -80,20 +80,20 @@ class Netvlad:
     
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):
-        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.1)
+        initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.05)
         filters = self.get_var(initial_value, name, 0, name + "_filters")
 
-        initial_value = tf.truncated_normal([out_channels], 0.0, .1)
+        initial_value = tf.truncated_normal([out_channels], 0.0, .01)
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return filters, biases
 
 
     def get_fc_var(self, in_size, out_size, name):
-        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.1)
+        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.05)
         weights = self.get_var(initial_value, name, 0, name + "_weights")
 
-        initial_value = tf.truncated_normal([out_size], 0.0, .1)
+        initial_value = tf.truncated_normal([out_size], 0.0, .01)
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return weights, biases
