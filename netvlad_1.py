@@ -65,7 +65,7 @@ class Netvlad:
 
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
-            relu = tf.nn.relu(norm)
+            relu = tf.nn.relu(bias)
 
             return relu
     
