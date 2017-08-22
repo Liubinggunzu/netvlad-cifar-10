@@ -24,7 +24,7 @@ FLAGS = tf.app.flags.FLAGS
 
 def main(_):
     config = tf.ConfigProto(allow_soft_placement = True)
-    with tf.device('/gpu:1'):
+    with tf.device('/gpu:0'):
         with tf.Session(config = config) as sess:
             X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
             Y = tf.placeholder(tf.int64, [None], name = 'Y')
@@ -38,7 +38,7 @@ def main(_):
 
 
             loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
-            train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
+            train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
 
             # output = model.fc3[0, :]
 

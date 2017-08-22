@@ -19,7 +19,7 @@ FLAGS = tf.app.flags.FLAGS
 
 def main(_):
     config = tf.ConfigProto(allow_soft_placement = True)
-    with tf.device('/gpu:1'):
+    with tf.device('/gpu:0'):
         with tf.Session(config = config) as sess:
             X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
             Y = tf.placeholder(tf.int64, [None], name = 'Y')
