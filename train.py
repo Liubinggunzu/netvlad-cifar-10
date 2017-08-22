@@ -38,7 +38,7 @@ def main(_):
 
 
             loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
-            train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
+            train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             output = model.fc3[0, :]
 
