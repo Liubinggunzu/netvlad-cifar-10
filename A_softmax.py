@@ -27,9 +27,8 @@ def func_thelta(cos_thelta, m, batch_size):
     k = [None] * batch_size
     for i in range(batch_size):
         for j in range(m):
-            if tf.greater_equal(cos_thelta[i], L_constant[j]):
-                k[i] = j
-                break
+            idx = m - j - 1
+            k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), idx, 0)
     K = tf.constant(k)
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
