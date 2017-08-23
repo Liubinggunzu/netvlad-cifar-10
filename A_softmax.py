@@ -24,12 +24,11 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
 def func_thelta(cos_thelta, m, batch_size):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
-    k = [None] * batch_size
+    K = tf.Variable(tf.zeros([batch_size]))
     for i in range(batch_size):
         for j in range(m):
             idx = m - j - 1
-            k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), idx, 0)
-    K = tf.constant(k)
+            K[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), tf.constant(idx), tf.constant(0))
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
