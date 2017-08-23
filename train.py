@@ -4,6 +4,7 @@ import tensorflow as tf
 
 import netvlad
 import netvlad_1
+import A_softmax
 import train_utils
 import os
 import math
@@ -37,7 +38,7 @@ def main(_):
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
 
-            loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
+            loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.softmax_W, model.fc3, 3)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             # output = model.fc3[0, :]

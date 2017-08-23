@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow as tf
 
 
+
 class Netvlad:
     def __init__(self, npy_path = None, trainable = True):
         if npy_path is not None:
@@ -15,12 +16,12 @@ class Netvlad:
         self.var_dict = {}
         self.trainable = trainable
 
-    def build(self, rgb):
+    def build(self, X):
         """
         :param rgb: rgb image [batch, height, width, 3] values scaled [0, 1]
         """
 
-        self.conv1 = self.conv_layer(rgb, 3, 64, "conv1")
+        self.conv1 = self.conv_layer(X, 3, 64, "conv1")
         # self.norm1 = tf.nn.lrn(self.conv1, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
         self.pool1 = self.max_pool(self.conv1, 'pool1')
 
@@ -43,13 +44,11 @@ class Netvlad:
         self.conv4_3 = self.conv_layer(self.conv4_2, 256, 256, "conv4_3")
         self.conv4_4 = self.conv_layer(self.conv4_3, 256, 256, "conv4_4")
 
-        self.reshape = tf.reshape(self.conv4_4, [-1, 4096])
-
-        self.fc1 = self.fc_layer(self.reshape, 4096, 384, 'fc1')
+        self.fc1 = self.fc_layer(self.conv4_4, 4096, 384, 'fc1')
 
         self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
-
-        self.fc3 = self.fc_layer(self.fc2, 192, 10, 'fc3')
+ 
+        self.softmax_W, self.fc3 = self.softmax_fc_layer(self.fc2, 192, 10, 'softmax_fc')
 
         self.data_dict = None
 
@@ -78,6 +77,15 @@ class Netvlad:
 
             return fc
     
+    def softmax_fc_layer(self, bottom, in_size, out_size, name):
+        with tf.variable_scope(name):
+            weights = self.get_softmax_fc_var(in_size, out_size, name)
+
+            x = tf.reshape(bottom, [-1, in_size])
+            fc = tf.matmul(x, weights)
+
+            return weights, fc
+    
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):
         initial_value = tf.truncated_normal([filter_size, filter_size, in_channels, out_channels], 0.0, 0.05)
@@ -97,6 +105,13 @@ class Netvlad:
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return weights, biases
+
+    def get_softmax_fc_var(self, in_size, out_size, name):
+        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.05)
+        weights = self.get_var(initial_value, name, 0, name + '_weights')
+        W_norm = tf.nn.l2_normalize(weights, dim = 0)
+
+        return W_norm
 
     def get_var(self, initial_value, name, idx, var_name):
         if self.data_dict is not None and name in self.data_dict:
