@@ -27,7 +27,7 @@ def func_thelta(cos_thelta, m):
     k = cos_thelta
     for i in range(m):
         idx = m - i - 1
-        k[tf.greater_equal(cos_thelta, L_constant[idx])] = idx
+        k[tf.greater_equal(cos_thelta, L_constant[idx])] = tf.constant(idx)
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
