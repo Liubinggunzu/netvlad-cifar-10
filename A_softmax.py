@@ -24,7 +24,7 @@ def A_softmax(x, y, W_norm, fc, m):
 def func_thelta(cos_thelta, m):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
-    k = tf.Variable(cos_thelta)
+    k = cos_thelta
     for i in range(m):
         idx = m - i - 1
         k[tf.greater_equal(cos_thelta, tf.slice(L_constant, idx, 1))] = idx
