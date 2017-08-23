@@ -6,7 +6,7 @@ import math
 # input W_norm is W x H
 # input fc is B x H
 # fc = tf.matmul(x, W_norm)
-def A_softmax(x, y, W_norm, fc, m):
+def A_softmax(x, y, W_norm, fc, m, batch_size):
     w_yi = tf.matmul(y, W_norm, transpose_b = True)     # w_yi is B x W
     f_yi = tf.reduce_sum(tf.multiply(fc, y), axis = -1)     # f_yi is B 
 
@@ -15,19 +15,22 @@ def A_softmax(x, y, W_norm, fc, m):
 
     cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
 
-    fc[tf.equal(y, tf.constant(1))] = w_norm * x_norm * func_thelta(cos_thelta, m)
+    fc[tf.equal(y, tf.constant(1))] = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
 
     fc_softmax = tf.nn.softmax(fc)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
     return loss
 
-def func_thelta(cos_thelta, m):
+def func_thelta(cos_thelta, m, batch_size):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
-    k = cos_thelta
-    for i in range(m):
-        idx = m - i - 1
-        k[tf.greater_equal(cos_thelta, L_constant[idx])] = tf.constant(idx)
+    k = [None] * batch_size
+    for i in range(batch_size):
+        for j in range(m):
+            if tf.greater_equal(cos_thelta[i], L_constant[j]):
+                k[i] = j
+                break
+    K = tf.constant(k)
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
@@ -35,6 +38,6 @@ def func_thelta(cos_thelta, m):
     elif m == 4:
         cos_m_thelta = 8 * cos_thelta ** 4 - 8 * cos_thelta ** 2 + 1
     
-    func_thelta = (-1) ** k * cos_m_thelta - 2 * k
+    func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
     return func_thelta
