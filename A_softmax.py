@@ -22,7 +22,7 @@ def A_softmax(x, y, W_norm, fc, m, batch_size, numClass):
     for i in range(batch_size):
         D = []
         for j in range(numClass):
-            D.append(tf.cond(tf.equal(1, y[i, j]), lambda: A[i], lambda: fc[i, j]))
+            D.append(tf.cond(tf.equal(1.0, y[i, j]), lambda: A[i], lambda: fc[i, j]))
         E = tf.stack(D)
         C.append(E)
             
