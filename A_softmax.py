@@ -43,7 +43,8 @@ def func_thelta(cos_thelta, m, batch_size):
     for i in range(batch_size):
         for j in range(m):
             idx = m - j - 1
-            K = K[i].assign(tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: tf.constant(idx, dtype = tf.float64), lambda: tf.constant(0, dtype = tf.float64)))
+            with tf.control_dependencies([K[i].assign(tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: tf.constant(idx, dtype = tf.float64), lambda: tf.constant(0, dtype = tf.float64)))]):
+                K = tf.identity(K)
     
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
