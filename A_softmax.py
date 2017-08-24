@@ -7,7 +7,7 @@ import numpy as np
 # input W_norm is W x H
 # input fc is B x H
 # fc = tf.matmul(x, W_norm)
-def A_softmax(x, y, W_norm, fc, m, batch_size):
+def A_softmax(x, y, W_norm, fc, m, batch_size, numClass):
     print(fc)
     w_yi = tf.matmul(y, W_norm, transpose_b = True)     # w_yi is B x W
     f_yi = tf.reduce_sum(tf.multiply(fc, y), axis = -1)     # f_yi is B 
@@ -20,12 +20,15 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
     A = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
     C = []
     for i in range(batch_size):
-        B = tf.Variable(fc[i, :])
-        with tf.control_dependencies([B[tf.argmax(y[i, :])].assign(A[i])]):
-            C.append(B)
-    D = tf.stack(C)
-    print(D.get_shape())
-    fc_softmax = tf.nn.softmax(D)
+        D = []
+        for j in range(numClass):
+            D.append(tf.cond(tf.equal(1, y[i, j]), lambda: A[i], lambda: fc[i, j]))
+        E = tf.stack(D)
+        C.append(E)
+            
+    F = tf.stack(C)
+    # print(D.get_shape())
+    fc_softmax = tf.nn.softmax(F)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
     return loss
 
@@ -46,7 +49,7 @@ def func_thelta(cos_thelta, m, batch_size):
         for j in range(m):
             idx = m - j - 1
             k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0)
-    K = tf.cast(tf.Variable(k, trainable = False), tf.float32)
+    K = tf.cast(tf.stack(k), tf.float32)
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
     return func_thelta
