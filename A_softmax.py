@@ -1,5 +1,6 @@
 import tensorflow as tf
 import math
+import numpy as np
 
 # input x is B x W
 # input y is B x H one-hot tensor
@@ -17,11 +18,12 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
     cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
 
     A = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
-    fc = tf.Variable(shape = fc.get_shape())
-    for i in range(batch_size):
-        fc = fc[i, tf.argmax(y[i, :])].assign(1)
 
-    fc_softmax = tf.nn.softmax(fc)
+    B = tf.Variable(initial_value = fc, trainable = False)
+    for i in range(batch_size):
+        B = B[i, tf.argmax(y[i, :])].assign(A[i])
+
+    fc_softmax = tf.nn.softmax(B)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
     return loss
 
@@ -29,12 +31,13 @@ def func_thelta(cos_thelta, m, batch_size):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
     # K = tf.Variable(tf.zeros([batch_size]))
-    k = [None] * batch_size
+    # k = [None] * batch_size
+    K = np.zeros((batch_size, ))
     for i in range(batch_size):
         for j in range(m):
             idx = m - j - 1
-            k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0)
-    K =tf.cast(tf.Variable(k), tf.float32)
+            K[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0)
+    # K = tf.cast(tf.constant(initial_value = k), tf.float32)
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
