@@ -24,7 +24,7 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
         with tf.control_dependencies([B[tf.argmax(y[i, :])].assign(A[i])]):
             C.append(B)
     D = tf.stack(C)
-
+    print(D.get_shape())
     fc_softmax = tf.nn.softmax(D)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
     return loss
