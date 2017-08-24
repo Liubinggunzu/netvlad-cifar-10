@@ -28,23 +28,22 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
     return loss
 
 def func_thelta(cos_thelta, m, batch_size):
-    L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
-    L_constant = tf.constant(value = L)
-    # K = tf.Variable(tf.zeros([batch_size]))
-    # k = [None] * batch_size
-    K = np.zeros((batch_size, ))
-    # for i in range(batch_size):
-    for j in range(m):
-        idx = m - j - 1
-        # K[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0)
-        K[tf.greater_equal(cos_thelta, L_constant)] = idx
-    # K = tf.cast(tf.constant(initial_value = k), tf.float32)
     if m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
         cos_m_thelta = 4 * cos_thelta ** 3 - 3 * cos_thelta
     elif m == 4:
         cos_m_thelta = 8 * cos_thelta ** 4 - 8 * cos_thelta ** 2 + 1
+
+    L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
+    L_constant = tf.constant(value = L)
+    # K = tf.Variable(tf.zeros([batch_size]))
+    # k = [None] * batch_size
+    K = tf.Variable(initial_value = np.zeros((batch_size, )), trainable = False)
+    for i in range(batch_size):
+        for j in range(m):
+            idx = m - j - 1
+            K = K[i].assign(tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0))
     
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
