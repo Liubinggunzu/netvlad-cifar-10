@@ -18,12 +18,14 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
     cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
 
     A = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
-
-    B = tf.Variable(initial_value = fc, trainable = False)
+    C = []
     for i in range(batch_size):
-        B = B[i, tf.argmax(y[i, :])].assign(A[i])
+        B = tf.Variable(fc[i, :])
+        with tf.control_dependencies([B[tf.argmax(y[i, :])].assign(A[i])]):
+            C.append(B)
+    D = tf.stack(C)
 
-    fc_softmax = tf.nn.softmax(B)
+    fc_softmax = tf.nn.softmax(D)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
     return loss
 

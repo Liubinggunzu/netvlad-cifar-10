@@ -27,8 +27,8 @@ def main(_):
     config = tf.ConfigProto(allow_soft_placement = True)
     with tf.device('/gpu:0'):
         with tf.Session(config = config) as sess:
-            X = tf.placeholder(tf.float32, [None, 32, 32, 3], name = 'X')
-            Y = tf.placeholder(tf.int64, [None], name = 'Y')
+            X = tf.placeholder(tf.float32, [FLAGS.batch_size, 32, 32, 3], name = 'X')
+            Y = tf.placeholder(tf.int64, [FLAGS.batch_size], name = 'Y')
             
             if FLAGS.use_vlad:
                 model = netvlad_1.Netvlad()
