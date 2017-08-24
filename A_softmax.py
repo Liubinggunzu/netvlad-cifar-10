@@ -7,6 +7,7 @@ import math
 # input fc is B x H
 # fc = tf.matmul(x, W_norm)
 def A_softmax(x, y, W_norm, fc, m, batch_size):
+    print(fc)
     w_yi = tf.matmul(y, W_norm, transpose_b = True)     # w_yi is B x W
     f_yi = tf.reduce_sum(tf.multiply(fc, y), axis = -1)     # f_yi is B 
 
@@ -16,7 +17,7 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
     cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
 
     A = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
-
+    fc = tf.Variable(shape = fc.get_shape())
     for i in range(batch_size):
         fc = fc[i, tf.argmax(y[i, :])].assign(1)
 
