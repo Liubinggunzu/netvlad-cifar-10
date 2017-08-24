@@ -15,7 +15,7 @@ def A_softmax(x, y, W_norm, fc, m, batch_size):
 
     cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
 
-    fc[tf.equal(y, tf.constant(1))] = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
+    fc[tf.equal(y, tf.constant(1.0))] = w_norm * x_norm * func_thelta(cos_thelta, m, batch_size)
 
     fc_softmax = tf.nn.softmax(fc)
     loss = tf.reduce_sum(-tf.log(fc_softmax) * y)
