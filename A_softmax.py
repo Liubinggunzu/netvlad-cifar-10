@@ -44,7 +44,7 @@ def func_thelta(cos_thelta, m, batch_size):
         for j in range(m):
             idx = m - j - 1
             k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, lambda: 0)
-    K = tf.Variable(k, trainable = False)
+    K = tf.Variable(k, dtype = tf.float32, trainable = False)
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
     return func_thelta
