@@ -38,10 +38,10 @@ def main(_):
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
 
-            loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.softmax_W, model.fc3, 3, FLAGS.batch_size, 10)
+            loss, output = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.softmax_W, model.fc3, 3, FLAGS.batch_size, 10)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
-            output = tf.nn.softmax(model.fc3)[0, :]
+            # output = tf.nn.softmax(model.fc3)[0, :]
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
@@ -59,7 +59,7 @@ def main(_):
                     _, train_loss, acc, out = sess.run([train, loss, accuracy, output], feed_dict = {X: x, Y: y})
                     if count % FLAGS.print_every == 0:
                         print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
-                        print(out)
+                        print(out[0, :])
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
