@@ -59,7 +59,7 @@ def main(_):
                     _, train_loss, acc, out = sess.run([train, loss, accuracy, output], feed_dict = {X: x, Y: y})
                     if count % FLAGS.print_every == 0:
                         print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
-                        print(out)
+                        print(out[0, :])
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
