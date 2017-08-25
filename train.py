@@ -39,7 +39,7 @@ def main(_):
 
 
             # loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, 4)
-            loss = tf.reduce_mean(-tf.log(model.fc3) * tf.one_hot(Y, depth = 10))
+            loss = tf.reduce_mean(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10))
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             output3 = model.fc3
