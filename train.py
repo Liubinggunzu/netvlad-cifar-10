@@ -41,7 +41,7 @@ def main(_):
             loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, 4)
             train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
 
-            output3 = model.conv2_4
+            output3 = model.fc1
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
@@ -61,7 +61,7 @@ def main(_):
                         print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
                         print(out1[:10])
                         print(out2[:10])
-                        print(out3[:10, 0, 0, 0])
+                        print(out3[:10, 0])
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
