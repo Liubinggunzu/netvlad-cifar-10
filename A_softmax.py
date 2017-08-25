@@ -9,7 +9,7 @@ import numpy as np
 def A_softmax(x, y, fc, m):
     f_yi = tf.reduce_sum(tf.multiply(fc, y), axis = -1)     # f_yi is B 
 
-    x_norm = tf.reduce_sum(x ** 2, axis = -1)      # x_norm is B
+    x_norm = tf.sqrt(tf.reduce_sum(x ** 2, axis = -1))      # x_norm is B
 
     cos_thelta = tf.divide(f_yi, x_norm)   # cos_thelta is B
     phi_thelta, K = func_thelta(cos_thelta, m)
