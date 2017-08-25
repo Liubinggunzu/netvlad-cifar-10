@@ -41,7 +41,7 @@ def main(_):
             loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.softmax_W, model.fc3, 3, FLAGS.batch_size, 10)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
-            output = model.fc3[0, :]
+            output = tf.nn.softmax(model.fc3)[0, :]
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
