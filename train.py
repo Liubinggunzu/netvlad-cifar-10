@@ -41,7 +41,7 @@ def main(_):
             loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, 4)
             train = tf.train.GradientDescentOptimizer(FLAGS.lr).minimize(loss)
 
-            output3 = model.conv4_4
+            output3 = model.conv3_4
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
