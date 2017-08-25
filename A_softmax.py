@@ -14,18 +14,22 @@ def A_softmax(x, y, fc, m, batch_size, numClass):
     cos_thelta = tf.divide(f_yi, x_norm)   # cos_thelta is B
     phi_thelta, K = func_thelta(cos_thelta, m, batch_size)
     A = x_norm * phi_thelta
-    C = []
-    for i in range(batch_size):
-        D = []
-        for j in range(numClass):
-            D.append(tf.cond(tf.equal(1.0, y[i, j]), lambda: A[i], lambda: fc[i, j]))
-        E = tf.stack(D)
-        C.append(E)
+
+    B = tf.exp(A)
+    C = tf.reduce_sum(tf.exp(fc) * (1.0 - y), axis = -1)
+    loss = tf.reduce_mean(-tf.log(tf.divide(B, B + C)))
+    # C = []
+    # for i in range(batch_size):
+    #     D = []
+    #     for j in range(numClass):
+    #         D.append(tf.cond(tf.equal(1.0, y[i, j]), lambda: A[i], lambda: fc[i, j]))
+    #     E = tf.stack(D)
+    #     C.append(E)
             
-    F = tf.stack(C)
-    # print(D.get_shape())
-    fc_softmax = tf.nn.softmax(F)
-    loss = tf.reduce_mean(tf.reduce_sum(-tf.log(fc_softmax) * y, axis = -1))
+    # F = tf.stack(C)
+    # # print(D.get_shape())
+    # fc_softmax = tf.nn.softmax(F)
+    # loss = tf.reduce_mean(tf.reduce_sum(-tf.log(fc_softmax) * y, axis = -1))
     return loss, x_norm, A
 
 def func_thelta(cos_thelta, m, batch_size):
