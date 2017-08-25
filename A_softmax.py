@@ -30,7 +30,7 @@ def A_softmax(x, y, fc, m, batch_size, numClass):
     # # print(D.get_shape())
     # fc_softmax = tf.nn.softmax(F)
     # loss = tf.reduce_mean(tf.reduce_sum(-tf.log(fc_softmax) * y, axis = -1))
-    return loss, x_norm, A
+    return loss, K, A
 
 def func_thelta(cos_thelta, m, batch_size):
     if m ==1:
@@ -45,12 +45,15 @@ def func_thelta(cos_thelta, m, batch_size):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
     # K = tf.Variable(tf.zeros([batch_size]))
-    k = [0.0] * batch_size
+    # k = [0.0] * batch_size
     # K = tf.Variable(initial_value = np.zeros((batch_size, )), trainable = False)
-    for i in range(batch_size):
-        for j in range(m):
-            k[i] += tf.cast(tf.less_equal(cos_thelta[i], L_constant[j]), tf.float32)
-    K = tf.stack(k)
+    # for i in range(batch_size):
+    #     for j in range(m):
+    #         k[i] += tf.cast(tf.less_equal(cos_thelta[i], L_constant[j]), tf.float32)
+    # K = tf.stack(k)
+    K = 0.0
+    for i in range(m):
+        K += tf.cast(tf.less_equal(cos_thelta, L_constant[i]), tf.float32)
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
     return func_thelta, K
