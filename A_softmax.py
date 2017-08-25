@@ -33,7 +33,9 @@ def A_softmax(x, y, W_norm, fc, m, batch_size, numClass):
     return loss, F
 
 def func_thelta(cos_thelta, m, batch_size):
-    if m == 2:
+    if m ==1:
+        cos_m_thelta = cos_thelta
+    elif m == 2:
         cos_m_thelta = 2 * cos_thelta ** 2 - 1
     elif m == 3:
         cos_m_thelta = 4 * cos_thelta ** 3 - 3 * cos_thelta
