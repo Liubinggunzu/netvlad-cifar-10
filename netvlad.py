@@ -107,7 +107,7 @@ class Netvlad:
         return weights, biases
 
     def get_softmax_fc_var(self, in_size, out_size, name):
-        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 1.0)
+        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.1)
         weights = self.get_var(initial_value, name, 0, name + '_weights')
         W_norm = tf.nn.l2_normalize(weights, dim = 0)
 
