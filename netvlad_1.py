@@ -61,7 +61,7 @@ class Netvlad:
 
     def conv_layer(self, bottom, in_channels, out_channels, name):
         with tf.variable_scope(name):
-            filt, conv_biases = self.get_conv_var(5, in_channels, out_channels, name)
+            filt, conv_biases = self.get_conv_var(3, in_channels, out_channels, name)
 
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
@@ -71,7 +71,7 @@ class Netvlad:
     
     def conv_layer_last(self, bottom, in_channels, out_channels, name):
         with tf.variable_scope(name):
-            filt, conv_biases = self.get_conv_var(5, in_channels, out_channels, name)
+            filt, conv_biases = self.get_conv_var(3, in_channels, out_channels, name)
 
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding = 'SAME')
             bias = tf.nn.bias_add(conv, conv_biases)
