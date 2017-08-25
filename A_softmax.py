@@ -43,13 +43,12 @@ def func_thelta(cos_thelta, m, batch_size):
     L = [math.cos(float(i + 1) / m * math.pi) for i in range(m)]
     L_constant = tf.constant(value = L)
     # K = tf.Variable(tf.zeros([batch_size]))
-    k = [0.0] * batch_size
+    k = [-1.0] * batch_size
     # K = tf.Variable(initial_value = np.zeros((batch_size, )), trainable = False)
     for i in range(batch_size):
         for j in range(m):
-            idx = m - j - 1
-            k[i] = tf.cond(tf.greater_equal(cos_thelta[i], L_constant[idx]), lambda: idx, false_fn = None)
-    K = tf.cast(tf.stack(k), tf.float32)
+            k[i] += tf.cast(tf.less_equal(cos_thelta[i], L_constant[j]), tf.float32)
+    K = tf.stack(k)
     func_thelta = ((-1) ** K) * cos_m_thelta - 2 * K
 
     return func_thelta, K
