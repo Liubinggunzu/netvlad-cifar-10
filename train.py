@@ -42,7 +42,7 @@ def main(_):
             loss = tf.reduce_mean(-tf.log(model.fc3) * tf.one_hot(Y, depth = 10))
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
-            output3 = model.fc1
+            output3 = model.fc3
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
