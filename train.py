@@ -38,7 +38,7 @@ def main(_):
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
 
-            loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.softmax_W, model.fc3, 4, FLAGS.batch_size, 10)
+            loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, 4, FLAGS.batch_size, 10)
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             # output = tf.nn.softmax(model.fc3)[0, :]

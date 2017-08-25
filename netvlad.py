@@ -48,7 +48,7 @@ class Netvlad:
 
         self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
  
-        self.softmax_W, self.fc3 = self.softmax_fc_layer(self.fc2, 192, 10, 'softmax_fc')
+        self.fc3 = self.softmax_fc_layer(self.fc2, 192, 10, 'softmax_fc')
 
         self.data_dict = None
 
@@ -84,7 +84,7 @@ class Netvlad:
             x = tf.reshape(bottom, [-1, in_size])
             fc = tf.matmul(x, weights)
 
-            return weights, fc
+            return fc
     
 
     def get_conv_var(self, filter_size, in_channels, out_channels, name):

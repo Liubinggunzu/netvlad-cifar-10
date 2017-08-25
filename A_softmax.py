@@ -4,20 +4,16 @@ import numpy as np
 
 # input x is B x W
 # input y is B x H one-hot tensor
-# input W_norm is W x H
 # input fc is B x H
-# fc = tf.matmul(x, W_norm)
-def A_softmax(x, y, W_norm, fc, m, batch_size, numClass):
-    print(fc)
-    w_yi = tf.matmul(y, W_norm, transpose_b = True)     # w_yi is B x W
+# fc = tf.matmul(x, W)
+def A_softmax(x, y, fc, m, batch_size, numClass):
     f_yi = tf.reduce_sum(tf.multiply(fc, y), axis = -1)     # f_yi is B 
 
-    w_norm = tf.norm(w_yi, axis = -1)   # w_norm is B 
     x_norm = tf.norm(x, axis = -1)      # x_norm is B
 
-    cos_thelta = tf.divide(f_yi, w_norm * x_norm)   # cos_thelta is B
+    cos_thelta = tf.divide(f_yi, x_norm)   # cos_thelta is B
     phi_thelta, K = func_thelta(cos_thelta, m, batch_size)
-    A = w_norm * x_norm * phi_thelta
+    A = x_norm * phi_thelta
     C = []
     for i in range(batch_size):
         D = []
@@ -30,7 +26,7 @@ def A_softmax(x, y, W_norm, fc, m, batch_size, numClass):
     # print(D.get_shape())
     fc_softmax = tf.nn.softmax(F)
     loss = tf.reduce_mean(tf.reduce_sum(-tf.log(fc_softmax) * y, axis = -1))
-    return loss, w_norm, cos_thelta
+    return loss, x_norm, A
 
 def func_thelta(cos_thelta, m, batch_size):
     if m ==1:
