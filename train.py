@@ -45,7 +45,11 @@ def main(_):
             else:
                 print('not using angular softmax')
                 loss = tf.reduce_mean(tf.reduce_sum(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10), axis = -1))
-            train = tf.train.RMSPropOptimizer(learning_rate = FLAGS.lr, decay = 0.9, momentum = 0.9).minimize(loss)
+            
+            global_step = tf.Variable(0, trainable=False)
+            starter_learning_rate = FLAGS.lr
+            learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
+            train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
