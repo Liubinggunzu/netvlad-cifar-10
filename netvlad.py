@@ -26,29 +26,27 @@ class Netvlad:
         self.pool1 = self.max_pool(self.conv1, 'pool1')
 
         self.conv2_1 = self.conv_layer(self.pool1, 64, 64, "conv2_1")
-        #self.conv2_2 = self.conv_layer(self.conv2_1, 64, 64, "conv2_2")
-        #self.conv2_3 = self.conv_layer(self.conv2_2, 64, 64, "conv2_3")
-        #self.conv2_4 = self.conv_layer(self.conv2_3, 64, 64, "conv2_4")
+        self.conv2_2 = self.conv_layer(self.conv2_1, 64, 64, "conv2_2")
+        self.conv2_3 = self.conv_layer(self.conv2_2, 64, 64, "conv2_3")
+        self.conv2_4 = self.conv_layer(self.conv2_3, 64, 64, "conv2_4")
         # self.norm2 = tf.nn.lrn(self.conv2_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool2 = self.max_pool(self.conv2_1, 'pool2')
+        self.pool2 = self.max_pool(self.conv2_4, 'pool2')
 
-        # self.conv3_1 = self.conv_layer(self.pool2, 64, 128, "conv3_1")
-        # self.conv3_2 = self.conv_layer(self.conv3_1, 128, 128, "conv3_2")
-        # self.conv3_3 = self.conv_layer(self.conv3_2, 128, 128, "conv3_3")
-        # self.conv3_4 = self.conv_layer(self.conv3_3, 128, 128, "conv3_4")
-        # # self.norm3 = tf.nn.lrn(self.conv3_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        # self.pool3 = self.max_pool(self.conv3_4, 'pool3')
+        self.conv3_1 = self.conv_layer(self.pool2, 64, 128, "conv3_1")
+        self.conv3_2 = self.conv_layer(self.conv3_1, 128, 128, "conv3_2")
+        self.conv3_3 = self.conv_layer(self.conv3_2, 128, 128, "conv3_3")
+        self.conv3_4 = self.conv_layer(self.conv3_3, 128, 128, "conv3_4")
+        # self.norm3 = tf.nn.lrn(self.conv3_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
+        self.pool3 = self.max_pool(self.conv3_4, 'pool3')
 
-        # self.conv4_1 = self.conv_layer(self.pool3, 128, 256, "conv4_1")
-        # self.conv4_2 = self.conv_layer(self.conv4_1, 256, 256, "conv4_2")
-        # self.conv4_3 = self.conv_layer(self.conv4_2, 256, 256, "conv4_3")
-        # self.conv4_4 = self.conv_layer(self.conv4_3, 256, 256, "conv4_4")
+        self.conv4_1 = self.conv_layer(self.pool3, 128, 256, "conv4_1")
+        self.conv4_2 = self.conv_layer(self.conv4_1, 256, 256, "conv4_2")
+        self.conv4_3 = self.conv_layer(self.conv4_2, 256, 256, "conv4_3")
+        self.conv4_4 = self.conv_layer(self.conv4_3, 256, 256, "conv4_4")
 
-        self.fc1 = self.fc_layer(self.pool2, 4096, 384, 'fc1')
-
-        self.fc2 = self.fc_layer(self.fc1, 384, 192, 'fc2')
+        self.fc1 = self.fc_layer(self.conv4_4, 4096, 512, 'fc1')
  
-        self.fc3 = self.softmax_fc_layer(self.fc2, 192, 10, 'softmax_fc')
+        self.fc3 = self.softmax_fc_layer(self.fc1, 512, 10, 'softmax_fc')
 
         self.data_dict = None
 
