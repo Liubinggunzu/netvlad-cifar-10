@@ -21,30 +21,24 @@ class Netvlad:
         :param rgb: rgb image [batch, height, width, 3] values scaled [0, 1]
         """
 
-        self.conv1 = self.conv_layer(X, 3, 64, "conv1")
-        # self.norm1 = tf.nn.lrn(self.conv1, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool1 = self.max_pool(self.conv1, 'pool1')
+        self.conv1_1 = self.conv_layer(X, 3, 64, "conv1_1")
+        self.conv1_2 = self.conv_layer(self.conv1_1, 64, 64, "conv1_2")
+        self.pool1 = self.max_pool(self.conv1_2, 'pool1')
 
-        self.conv2_1 = self.conv_layer(self.pool1, 64, 64, "conv2_1")
-        self.conv2_2 = self.conv_layer(self.conv2_1, 64, 64, "conv2_2")
-        self.conv2_3 = self.conv_layer(self.conv2_2, 64, 64, "conv2_3")
-        self.conv2_4 = self.conv_layer(self.conv2_3, 64, 64, "conv2_4")
-        # self.norm2 = tf.nn.lrn(self.conv2_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool2 = self.max_pool(self.conv2_4, 'pool2')
+        self.conv2_1 = self.conv_layer(self.pool1, 64, 128, "conv2_1")
+        self.conv2_2 = self.conv_layer(self.conv2_1, 128, 128, "conv2_2")
+        self.pool2 = self.max_pool(self.conv2_2, 'pool2')
 
-        self.conv3_1 = self.conv_layer(self.pool2, 64, 128, "conv3_1")
-        self.conv3_2 = self.conv_layer(self.conv3_1, 128, 128, "conv3_2")
-        self.conv3_3 = self.conv_layer(self.conv3_2, 128, 128, "conv3_3")
-        self.conv3_4 = self.conv_layer(self.conv3_3, 128, 128, "conv3_4")
-        # self.norm3 = tf.nn.lrn(self.conv3_4, 4, bias = 1.0, alpha = 0.001 / 9.0, beta = 0.75)
-        self.pool3 = self.max_pool(self.conv3_4, 'pool3')
+        self.conv3_1 = self.conv_layer(self.pool2, 128, 256, "conv3_1")
+        self.conv3_2 = self.conv_layer(self.conv3_1, 256, 256, "conv3_2")
+        self.conv3_3 = self.conv_layer(self.conv3_2, 256, 256, "conv3_3")
+        self.pool3 = self.max_pool(self.conv3_3, 'pool3')
 
-        self.conv4_1 = self.conv_layer(self.pool3, 128, 256, "conv4_1")
-        self.conv4_2 = self.conv_layer(self.conv4_1, 256, 256, "conv4_2")
-        self.conv4_3 = self.conv_layer(self.conv4_2, 256, 256, "conv4_3")
-        self.conv4_4 = self.conv_layer(self.conv4_3, 256, 256, "conv4_4")
+        self.conv4_1 = self.conv_layer(self.pool3, 256, 512, "conv4_1")
+        self.conv4_2 = self.conv_layer(self.conv4_1, 512, 512, "conv4_2")
+        self.conv4_3 = self.conv_layer(self.conv4_2, 512, 512, "conv4_3")
 
-        self.fc1 = self.fc_layer(self.conv4_4, 4096, 512, 'fc1')
+        self.fc1 = self.fc_layer(self.conv4_3, 8192, 512, 'fclayer1')
  
         self.fc3 = self.softmax_fc_layer(self.fc1, 512, 10, 'softmax_fc')
 

@@ -33,9 +33,9 @@ def main(_):
             Y = tf.placeholder(tf.int64, [FLAGS.batch_size], name = 'Y')
             
             if FLAGS.use_vlad:
-                model = netvlad_1.Netvlad()
+                model = netvlad_1.Netvlad('vgg16.npy')
             else:
-                model = netvlad.Netvlad()
+                model = netvlad.Netvlad('vgg16.npy')
             model.build(X)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
