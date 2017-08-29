@@ -41,7 +41,7 @@ def main(_):
 
             if FLAGS.use_a_softmax:
                 print('using angular softmax')
-                loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, FLAGS.m)
+                loss = A_softmax.A_softmax(model.fc1, tf.one_hot(Y, depth = 10), model.fc3, FLAGS.m)
             else:
                 print('not using angular softmax')
                 loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
