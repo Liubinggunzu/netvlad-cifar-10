@@ -38,7 +38,7 @@ class Netvlad:
         self.conv4_2 = self.conv_layer(self.conv4_1, 512, 512, "conv4_2")
         self.conv4_3 = self.conv_layer(self.conv4_2, 512, 512, "conv4_3")
 
-        self.fc1 = self.fc_layer(self.conv4_3, 8192, 512, 'fclayer1')
+        self.fc1 = self.fc_layer(self.conv4_3, 8192, 512, 'fclayer_1')
  
         self.fc3 = self.softmax_fc_layer(self.fc1, 512, 10, 'softmax_fc')
 
@@ -90,10 +90,10 @@ class Netvlad:
 
 
     def get_fc_var(self, in_size, out_size, name):
-        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.01)
+        initial_value = tf.truncated_normal([in_size, out_size], 0.0, 0.001)
         weights = self.get_var(initial_value, name, 0, name + "_weights")
 
-        initial_value = tf.truncated_normal([out_size], 0.0, .01)
+        initial_value = tf.truncated_normal([out_size], 0.0, .001)
         biases = self.get_var(initial_value, name, 1, name + "_biases")
 
         return weights, biases
