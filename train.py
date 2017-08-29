@@ -18,6 +18,7 @@ tf.app.flags.DEFINE_integer('numEpoch', 30, 'num of epochs to train')
 tf.app.flags.DEFINE_float('lr', 0.001, 'initial learning rate')
 tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 tf.app.flags.DEFINE_integer('save_every', 5, 'save model every ... epochs')
+tf.app.flags.DEFINE_integer('m', 1, 'margin of angular softmax')
 
 tf.app.flags.DEFINE_boolean('use_vlad', True, 'use vlad pooling or not')
 FLAGS = tf.app.flags.FLAGS
@@ -38,7 +39,7 @@ def main(_):
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
 
-            loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, 3)
+            loss, output1, output2 = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, FLAGS.m)
             # loss = tf.reduce_mean(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10))
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
