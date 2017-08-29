@@ -108,7 +108,6 @@ class Netvlad:
     def get_var(self, initial_value, name, idx, var_name):
         if self.data_dict is not None and name in self.data_dict:
             value = self.data_dict[name][idx]
-            # print value
         else:
             value = initial_value
 
@@ -121,7 +120,6 @@ class Netvlad:
 
         # print var_name, var.get_shape().as_list()
         assert var.get_shape() == initial_value.get_shape()
-        print var
         return var
 
     def save_npy(self, sess, npy_path = "./netvlad-save.npy"):
