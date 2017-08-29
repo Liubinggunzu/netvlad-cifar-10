@@ -8,7 +8,7 @@ import A_softmax
 import train_utils
 import os
 import math
-
+import numpy as np
 
 
 tf.app.flags.DEFINE_string('checkpoint_dir', 'checkpoint', 'directory to save trained models')
@@ -75,7 +75,8 @@ def main(_):
                         # print(out1[:10])
                         # print(out2[:10])
                         # print(out3[:10, 0])
-                        print(output[:10])
+                        print [list(output).count(j) fot j in range(10)]
+                            
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
