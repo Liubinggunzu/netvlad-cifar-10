@@ -69,6 +69,7 @@ def main(_):
                 count = 0.0
                 for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                     count += 1
+                    assert False
                     _, train_loss, acc, out1 = sess.run([train, loss, accuracy, output1], feed_dict = {X: x, Y: y})
                     # _, train_loss, acc, out3 = sess.run([train, loss, accuracy, output3], feed_dict = {X: x, Y: y})
                     if count % FLAGS.print_every == 0:
@@ -77,7 +78,6 @@ def main(_):
                         # print(out2[:10])
                         # print(out3[:10, 0])
                         #print [list(output).count(j) for j in range(10)]
-                            
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
