@@ -53,7 +53,7 @@ def main(_):
             # learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
             # train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
-            output1 = model.conv4_3
+            output1 = model.conv2_1
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
