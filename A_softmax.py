@@ -17,7 +17,8 @@ def A_softmax(x, y, fc, m):
 
     B = tf.exp(A)
     C = tf.reduce_sum(tf.exp(fc) * (1.0 - y), axis = -1)
-    loss = tf.reduce_mean(-tf.log(tf.divide(B, B + C)))
+    D = tf.divide(B, B + C)
+    loss = tf.reduce_mean(-tf.log(D))
     # C = []
     # for i in range(batch_size):
     #     D = []
@@ -30,7 +31,7 @@ def A_softmax(x, y, fc, m):
     # # print(D.get_shape())
     # fc_softmax = tf.nn.softmax(F)
     # loss = tf.reduce_mean(tf.reduce_sum(-tf.log(fc_softmax) * y, axis = -1))
-    return loss
+    return loss, D
 
 def func_thelta(cos_thelta, m):
     if m ==1:
