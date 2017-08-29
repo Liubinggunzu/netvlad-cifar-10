@@ -20,6 +20,7 @@ tf.app.flags.DEFINE_integer('print_every', 5, 'print every ... batch')
 tf.app.flags.DEFINE_integer('save_every', 5, 'save model every ... epochs')
 tf.app.flags.DEFINE_integer('m', 1, 'margin of angular softmax')
 tf.app.flags.DEFINE_boolean('use_a_softmax', True, 'use angular softmax or not')
+tf.app.flags.DEFINE_string('modelPath', 'epoch19.npy', 'path of pretrained model')
 
 tf.app.flags.DEFINE_boolean('use_vlad', True, 'use vlad pooling or not')
 FLAGS = tf.app.flags.FLAGS
