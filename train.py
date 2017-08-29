@@ -36,7 +36,7 @@ def main(_):
             if FLAGS.use_vlad:
                 model = netvlad_1.Netvlad('vgg16.npy')
             else:
-                model = netvlad.Netvlad('vgg16.npy')
+                model = netvlad.Netvlad(FLAGS.modelPath)
             model.build(X)
             print("number of total parameters in the model is %d\n" % model.get_var_count())
 
