@@ -53,7 +53,7 @@ def main(_):
             # learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
             # train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
-            output1 = model.conv1_1
+            # output1 = model.conv1_1
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
@@ -69,7 +69,7 @@ def main(_):
                 count = 0.0
                 for x, y in train_utils.next_batch(FLAGS.batch_size, 'cifar-10-batches-py'):
                     count += 1
-                    _, train_loss, acc, out1 = sess.run([train, loss, accuracy, output1], feed_dict = {X: x, Y: y})
+                    _, train_loss, acc, out1 = sess.run([train, loss, accuracy, X], feed_dict = {X: x, Y: y})
                     # _, train_loss, acc, out3 = sess.run([train, loss, accuracy, output3], feed_dict = {X: x, Y: y})
                     if count % FLAGS.print_every == 0:
                         print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
