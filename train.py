@@ -44,7 +44,8 @@ def main(_):
                 loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, FLAGS.m)
             else:
                 print('not using angular softmax')
-                loss = tf.reduce_mean(tf.reduce_sum(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10), axis = -1))
+                loss = tf.losses.soft_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
+                # loss = tf.reduce_mean(tf.reduce_sum(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10), axis = -1))
             
             global_step = tf.Variable(0, trainable=False)
             starter_learning_rate = FLAGS.lr
