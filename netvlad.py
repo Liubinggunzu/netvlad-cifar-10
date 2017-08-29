@@ -108,6 +108,7 @@ class Netvlad:
     def get_var(self, initial_value, name, idx, var_name):
         if self.data_dict is not None and name in self.data_dict:
             value = self.data_dict[name][idx]
+            print value
         else:
             value = initial_value
 
