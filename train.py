@@ -53,7 +53,7 @@ def main(_):
             # learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
             # train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
-            output1 = model.fc3
+            output1 = model.fc1
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
@@ -73,7 +73,7 @@ def main(_):
                     # _, train_loss, acc, out3 = sess.run([train, loss, accuracy, output3], feed_dict = {X: x, Y: y})
                     if count % FLAGS.print_every == 0:
                         print("Epoch: %s    progress: %.4f  accuracy = %.4f      training_loss = %.6f\n" % (i, count / numBatch, acc, train_loss))
-                        print(out1[:10, :])
+                        print(out1[:10, :10])
                         # print(out2[:10])
                         # print(out3[:10, 0])
                         #print [list(output).count(j) for j in range(10)]
