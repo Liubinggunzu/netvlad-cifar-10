@@ -44,7 +44,7 @@ def main(_):
                 loss = A_softmax.A_softmax(model.fc2, tf.one_hot(Y, depth = 10), model.fc3, FLAGS.m)
             else:
                 print('not using angular softmax')
-                loss = tf.reduce_mean(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10))
+                loss = tf.reduce_mean(tf.reduce_sum(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10), axis = -1))
             train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
