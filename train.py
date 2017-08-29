@@ -48,13 +48,13 @@ def main(_):
                 loss = tf.losses.softmax_cross_entropy(tf.one_hot(Y, depth = 10), model.fc3)
                 # loss = tf.reduce_mean(tf.reduce_sum(-tf.log(tf.nn.softmax(model.fc3)) * tf.one_hot(Y, depth = 10), axis = -1))
             
-            global_step = tf.Variable(0, trainable=False)
-            starter_learning_rate = FLAGS.lr
-            learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
-            train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
+            # global_step = tf.Variable(0, trainable=False)
+            # starter_learning_rate = FLAGS.lr
+            # learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 100000, 0.96, staircase = True)
+            # train = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
 
             # output1 = model.fc1
-            # train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
+            train = tf.train.RMSPropOptimizer(FLAGS.lr).minimize(loss)
 
             correct_prediction = tf.equal(tf.argmax(tf.nn.softmax(model.fc3), axis = 1), Y)
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, 'float'))
@@ -77,8 +77,8 @@ def main(_):
                         # print(out1[:10, 0])
                         # print(out2[:10])
                         # print(out3[:10, 0])
-                        #print [list(output).count(j) for j in range(10)]
-                        assert False
+                        # print [list(output).count(j) for j in range(10)]
+                        # assert False
                 if (i + 1) % FLAGS.save_every == 0:
                     model.save_npy(sess, "%s/epoch_%d_loss_%.6f" % (FLAGS.checkpoint_dir, i, train_loss))
                 
